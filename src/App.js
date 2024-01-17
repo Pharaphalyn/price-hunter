@@ -17,7 +17,6 @@ const App = () => {
       <Web3ProviderCore
         render={(network, setupConnection) => (
           <div>
-            <NarBar />
             <PoolTracker
               network={network}
               setupConnection={setupConnection}
