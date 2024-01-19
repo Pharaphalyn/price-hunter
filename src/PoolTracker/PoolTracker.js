@@ -1,10 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Transition } from "@headlessui/react";
-import { Toaster } from "react-hot-toast";
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useEffect, useState } from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { ConfigField } from "./CoinField";
-import useWebSocket, { ReadyState } from "react-use-websocket";
-
+import useWebSocket from "react-use-websocket";
+import { Shark } from "../assets";
 const CustomTooltip = ({ active, payload, label }) => {
   const getName = (name) => {
     switch (name) {
@@ -26,7 +24,6 @@ const CustomTooltip = ({ active, payload, label }) => {
   }
 
   if (active && payload && payload.length) {
-    console.log(payload);
     return (
       <div className="bg-primary-black text-white p-5 rounded">
         <p className="label mb-5 text-gray-400">{label.toLocaleString()}</p>
@@ -108,12 +105,20 @@ function PoolTracker() {
     }
     if (hunter.topLine && point > hunter.topLine) {
       hunter = setUpHunter(hunter.topLine, new Date(), hunter.status ? null : 'top');
-      addLog(`Hunter crossed the low top threshold! New hunter position: ${hunter.hunter}.`, 'primary-yellow');
+      if (hunter.status === null) {
+        addLog(`Congratulations! Hunter crossed both thresholds. New hunter position: ${hunter.hunter}.`, 'primary-green');
+      } else {
+        addLog(`Hunter crossed the low top threshold! New hunter position: ${hunter.hunter}.`, 'primary-yellow');
+      }
       return checkHunt(hunter, point);
     }
     if (hunter.bottomLine && point < hunter.bottomLine) {
       hunter = setUpHunter(hunter.bottomLine, new Date(), hunter.status ? null : 'bottom');
-      addLog(`Hunter crossed the low bottom threshold! New hunter position: ${hunter.hunter}.`, 'primary-yellow');
+      if (hunter.status === null) {
+        addLog(`Congratulations! Hunter crossed both thresholds. New hunter position: ${hunter.hunter}.`, 'primary-green');
+      } else {
+        addLog(`Hunter crossed the low bottom threshold! New hunter position: ${hunter.hunter}.`, 'primary-yellow');
+      }
       return checkHunt(hunter, point);
     }
     return hunter;
@@ -184,7 +189,10 @@ function PoolTracker() {
   }
 
   function tickFormatter(value) {
-    return value.toFixed(2);
+    if (!value || !value.toFixed) {
+      console.log(value);
+    }
+    return value && value.toFixed ? value.toFixed(2) : '';
   }
 
   function dateFormatter(value) {
@@ -196,7 +204,7 @@ function PoolTracker() {
 
   const CustomizedDot = ({cx, cy, value}) => {
     return (
-        <circle key={value} cx={cx} cy={cy} r={4} fill={value ? 'red' : 'transparent'} />
+        <Shark x={cx} y={cy} classes={value ? '' : 'hidden'} />
     );
   };
 
@@ -230,9 +238,16 @@ function PoolTracker() {
           <Line isAnimationActive={false} key={'l4' + chartData.length} dot={false} stroke="#facc15" dataKey="topLine" />
           <Line isAnimationActive={false} key={'l5' + chartData.length} dot={false} stroke="#65B3AD" strokeWidth={2} dataKey="highBottomLine" />
           <Line isAnimationActive={false} key={'l6' + chartData.length} dot={false} stroke="#65B3AD" strokeWidth={2} dataKey="highTopLine" />
-          <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
           <XAxis tickFormatter={dateFormatter} dataKey="datetime" />
-          <YAxis tickFormatter={tickFormatter} type="number" domain={[dataMin => dataMin * 0.999, dataMax => dataMax * 1.001]} />
+          <YAxis tickFormatter={tickFormatter}
+            orientation="right"
+            ticks={[hunterPoint.highBottomLine,
+              hunterPoint.bottomLine,
+              chartData.length ? +chartData[chartData.length - 1].open : 100,
+              hunterPoint.topLine,
+              hunterPoint.highTopLine]}
+            type="number"
+            domain={[dataMin => dataMin * 0.999, dataMax => dataMax * 1.001]} />
           <Tooltip content={<CustomTooltip />} />
         </LineChart>
       </ResponsiveContainer>
