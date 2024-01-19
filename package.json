@@ -4,7 +4,7 @@
   "engines": {
     "node": "16.18.1"
   },
-  "homepage": "./",
+  "homepage": "https://pharaphalyn.github.io/price-hunter",
   "private": true,
   "dependencies": {
     "@babel/core": "^7.14.3",
@@ -24,6 +24,7 @@
     "tailwindcss": "^3.2.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
