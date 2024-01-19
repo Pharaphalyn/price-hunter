@@ -23,3 +23,11 @@ body {
   background-size: 100% auto;
   background-repeat: no-repeat;
 }
+
+.recharts-responsive-container {
+  height: auto !important;
+}
+
+.text-primary-yellow {
+  color: #FACC15;
+}
