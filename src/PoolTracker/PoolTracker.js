@@ -231,7 +231,7 @@ function PoolTracker() {
         >Set Nets</button>
       </div>
       <ResponsiveContainer aspect={2}>
-        <LineChart key={'lc' + chartData.length} margin={{left: 20}} data={chartData}>
+        <LineChart key={'lc' + chartData.length} margin={{right: 20}} data={chartData}>
           <Line isAnimationActive={false} key={'l1' + chartData.length} dot={false} type="linear" dataKey="open" stroke="#8884d8" />
           <Line isAnimationActive={false} dot={CustomizedDot} key={'l2' + chartData.length} dataKey="hunter" />
           <Line isAnimationActive={false} key={'l3' + chartData.length} dot={false} stroke="#facc15" dataKey="bottomLine" />
