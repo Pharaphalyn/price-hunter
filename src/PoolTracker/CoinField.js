@@ -105,7 +105,7 @@ export function ConfigField(props) {
   const { value, onChange, activeField, fieldName } = props;
 
   return (
-    <div className="flex mt-5 justify-between items-center flex-row w-full min-w-full h-20 bg-primary-black sm:p-8 p-4 rounded-2xl">
+    <div className="flex justify-between items-center flex-row w-[49%] h-20 bg-primary-black sm:p-8 p-4 rounded-2xl">
       <input
         placeholder="3"
         type="number"

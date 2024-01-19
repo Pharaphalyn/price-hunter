@@ -5,10 +5,47 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContai
 import { ConfigField } from "./CoinField";
 import useWebSocket, { ReadyState } from "react-use-websocket";
 
+const CustomTooltip = ({ active, payload, label }) => {
+  const getName = (name) => {
+    switch (name) {
+      case 'open':
+        return 'Price';
+      case 'topLine':
+        return 'Low Top Line';
+      case 'bottomLine':
+        return 'Low Bottom Line';
+      case 'highBottomLine':
+        return 'High Bottom Line';
+      case 'highTopLine':
+        return 'High Top Line';
+      case 'hunter':
+        return 'Hunter';
+      default:
+        return name;
+    }
+  }
+
+  if (active && payload && payload.length) {
+    console.log(payload);
+    return (
+      <div className="bg-primary-black text-white p-5 rounded">
+        <p className="label mb-5 text-gray-400">{label.toLocaleString()}</p>
+        {payload.map((el, index) => {
+          return (<p key={index} className="label">
+            {getName(el.name)}: {el.value}
+          </p>)
+        })}
+        {/* <p className="intro">{getIntroOfPage(label)}</p> */}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 function PoolTracker() {
   const [chartData, setChartData] = useState([]);
   const [hunterPoint, setHunterPoint] = useState({});
-  const [newPoint, setNewPoint] = useState();
   const [lowNet, setLowNet] = useState(0.0005);
   const [highNet, setHighNet] = useState(0.004);
   const [lowNetInput, setLowNetInput] = useState(lowNet * 100);
@@ -19,15 +56,6 @@ function PoolTracker() {
 	const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
 		socketUrl,
 	);
-  const [messageHistory, setMessageHistory] = useState([]);
-
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: 'Connecting',
-    [ReadyState.OPEN]: 'Open',
-    [ReadyState.CLOSING]: 'Closing',
-    [ReadyState.CLOSED]: 'Closed',
-    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-  }[readyState];
 
   useEffect(() => {
     async function getData() {
@@ -52,12 +80,10 @@ function PoolTracker() {
   useEffect(() => {
     if (lastJsonMessage !== null) {
       addPoint(lastJsonMessage.o);
-      setMessageHistory((prev) => prev.concat(lastJsonMessage));
     }
-  }, [lastJsonMessage, setMessageHistory]);
+  }, [lastJsonMessage]);
 
   function setUpHunter(value, datetime, status = hunterPoint.status) {
-    console.log(lowNet, highNet);
     return {
       hunter: value,
       datetime,
@@ -176,7 +202,7 @@ function PoolTracker() {
 
   return (
     <div className="w-full bg-primary-gray backdrop-blur-[4px] shadow-card flex flex-col p-10">
-      <div className="mb-6 w-[100%] flex flex-col">
+      <div className="w-[100%] flex justify-between">
         <ConfigField
           activeField={true}
           value={lowNetInput}
@@ -189,8 +215,10 @@ function PoolTracker() {
           onChange={handleChange.highNet}
           fieldName="High Net (%)"
         />
+      </div>
+      <div className="flex justify-center">
         <button
-          className="bg-primary-green text-white border-none outline-none px-12 py-2 font-poppins font-semibold text-md rounded-lg transition-all my-4"
+          className="w-64 bg-primary-green text-white border-none outline-none px-12 py-2 font-poppins font-semibold text-md rounded-lg my-4 mb-5"
           onClick={setNets}
         >Set Nets</button>
       </div>
@@ -200,12 +228,12 @@ function PoolTracker() {
           <Line isAnimationActive={false} dot={CustomizedDot} key={'l2' + chartData.length} dataKey="hunter" />
           <Line isAnimationActive={false} key={'l3' + chartData.length} dot={false} stroke="#facc15" dataKey="bottomLine" />
           <Line isAnimationActive={false} key={'l4' + chartData.length} dot={false} stroke="#facc15" dataKey="topLine" />
-          <Line isAnimationActive={false} key={'l5' + chartData.length} dot={false} stroke="#65B3AD" dataKey="highBottomLine" />
-          <Line isAnimationActive={false} key={'l6' + chartData.length} dot={false} stroke="#65B3AD" dataKey="highTopLine" />
+          <Line isAnimationActive={false} key={'l5' + chartData.length} dot={false} stroke="#65B3AD" strokeWidth={2} dataKey="highBottomLine" />
+          <Line isAnimationActive={false} key={'l6' + chartData.length} dot={false} stroke="#65B3AD" strokeWidth={2} dataKey="highTopLine" />
           <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
           <XAxis tickFormatter={dateFormatter} dataKey="datetime" />
           <YAxis tickFormatter={tickFormatter} type="number" domain={[dataMin => dataMin * 0.999, dataMax => dataMax * 1.001]} />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
         </LineChart>
       </ResponsiveContainer>
       <div className="bg-primary-black text-white p-5 mt-10">Log</div>
