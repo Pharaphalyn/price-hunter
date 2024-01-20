@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useWindowDimensions from "../hooks/windowDimensions";
 
 function Icon({x, y, classes}) {
+  const { height, width } = useWindowDimensions();
+  const [sharkSize, setSharkSize] = useState(20);
+  useEffect(() => {
+    if (width < 768) {
+      setSharkSize(6);
+    } else {
+      setSharkSize(20);
+    }
+  }, [width])
   return (
-    <svg width={60} height={30} x={x - 30} y={y - 15} className={classes} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1722 774.38">
+    <svg width={sharkSize * 2} height={sharkSize} x={x - sharkSize} y={y - sharkSize / 2} className={classes} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1722 774.38">
       <path
         fill="#053f65"
         stroke="#000"
