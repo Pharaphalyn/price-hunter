@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/price-hunter/static/css/main.4be90536.css",
-    "main.js": "/price-hunter/static/js/main.f65c10a5.js",
+    "main.css": "/price-hunter/static/css/main.8a07c1c4.css",
+    "main.js": "/price-hunter/static/js/main.67ce45fe.js",
     "index.html": "/price-hunter/index.html",
     "static/media/background.svg": "/price-hunter/static/media/background.d014566e2e4ffaac5993.svg",
-    "main.4be90536.css.map": "/price-hunter/static/css/main.4be90536.css.map",
-    "main.f65c10a5.js.map": "/price-hunter/static/js/main.f65c10a5.js.map"
+    "main.8a07c1c4.css.map": "/price-hunter/static/css/main.8a07c1c4.css.map",
+    "main.67ce45fe.js.map": "/price-hunter/static/js/main.67ce45fe.js.map"
   },
   "entrypoints": [
-    "static/css/main.4be90536.css",
-    "static/js/main.f65c10a5.js"
+    "static/css/main.8a07c1c4.css",
+    "static/js/main.67ce45fe.js"
   ]
 }
